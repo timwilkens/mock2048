@@ -63,6 +63,18 @@ object Play extends SimpleSwingApplication {
   // Side Effects!
   computerPlay()
 
+  def mergeLabels(merger: Int, mergeInto: Int): Unit = {
+    val newValue = (labels(merger).text.toInt * 2)
+
+    // Wipe the old label.
+    labels(merger).text = null
+    labels(merger).background = cream
+
+    // Upgrade.
+    labels(mergeInto).text = newValue.toString
+    labels(mergeInto).background = colorMap(newValue)
+  }
+
 
   def handleMove(position: Int, i: Int, f: (Int, Int) => Int, max: Int): Int  = {
     if (max == 0) return 0
@@ -70,7 +82,17 @@ object Play extends SimpleSwingApplication {
     val prevText = labels(position).text
     val prevColor = labels(position).background
     var newPosition = f(position, i)
-    if (labels(newPosition).background != cream) return 0
+
+    // We have labels to merge.
+    var merge = if (labels(newPosition).background == labels(position).background) true else false
+
+    if (merge) {
+      mergeLabels(position, newPosition)
+      return 1
+    }
+
+    // We can't move here.
+    if ((labels(newPosition).background != cream) && !merge) return 0
         
     if (max > 1) {
        // Probably a much nicer recursive solution.
