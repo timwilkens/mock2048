@@ -50,15 +50,21 @@ object Play extends SimpleSwingApplication {
   labels(position).text = "2"
   labels(position).background = lightestBlue 
 
-  def handleMove(i: Int, f: (Int, Int) => Int): Unit  = {
+  position = randomIterator.nextInt(16)
+  labels(position).text = "2"
+  labels(position).background = lightestBlue 
+
+  
+
+  def handleMove(position: Int, i: Int, f: (Int, Int) => Int): Unit  = {
+     if (labels(position).background == cream) return
      val prevText = labels(position).text
      val prevColor = labels(position).background
      labels(position).text = null
      labels(position).background = cream
-     position = f(position, i)
-//     colorIndex = (colorIndex + 1) % 5
-     labels(position).text = prevText
-     labels(position).background = prevColor
+     val newPosition = f(position, i)
+     labels(newPosition).text = prevText
+     labels(newPosition).background = prevColor
      score.text = ((score.text.toInt) + 1).toString
   }
 
@@ -83,20 +89,28 @@ object Play extends SimpleSwingApplication {
       listenTo(keys)
       reactions += {
         case KeyReleased(_, Key.Left, _, _) =>
-          if ((position != 0) && (position != 4) && (position != 8) && (position != 12)) {
-            handleMove(1, (x, y) => x - y)
+          for (s <- 0 to 15) {
+            if ((s != 0) && (s != 4) && (s != 8) && (s != 12)) {
+              handleMove(s, 1, (x, y) => x - y)
+            }
           }
         case KeyReleased(_, Key.Right, _, _) =>
-          if ((position != 3) && (position != 7) && (position != 11) && (position != 15)) {
-            handleMove(1, (x, y) => x + y)
+          for (s <- (0 to 15).reverse) {
+            if ((s != 3) && (s != 7) && (s != 11) && (s != 15)) {
+                handleMove(s, 1, (x, y) => x + y)
+            }
           }
         case KeyReleased(_, Key.Up, _, _) =>
-          if ((position != 0) && (position != 1) && (position != 2) && (position != 3)) {
-            handleMove(4, (x, y) => x - y)
+          for (s <- (0 to 12 by +4) ++ (1 to 13 by +4) ++ (2 to 14 by +4) ++ (3 to 15 by +4)) {
+            if ((position != 0) && (position != 1) && (position != 2) && (position != 3)) {
+              handleMove(s, 4, (x, y) => x - y)
+            }
           }
         case KeyReleased(_, Key.Down, _, _) =>
-          if ((position != 12) && (position != 13) && (position != 14) && (position != 15)) {
-            handleMove(4, (x, y) => x + y)
+          for (s <- (12 to 0 by -4) ++ (13 to 1 by -4) ++ (14 to 2 by -4) ++ (15 to 3 by -4)) {
+            if ((position != 12) && (position != 13) && (position != 14) && (position != 15)) {
+              handleMove(s, 4, (x, y) => x + y)
+            }
           }
       }
     }
