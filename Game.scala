@@ -6,15 +6,18 @@ import java.awt.{Color => AWTColor}
 
 object Play extends SimpleSwingApplication {
 
-  val bluishGray    = new AWTColor(48, 99, 99)
-  val bluishSilver  = new AWTColor(210, 255, 255)
-  val darkGreen     = new AWTColor(0, 128, 96)
-  val blueGreen     = new AWTColor (0, 96, 128)
+  val cream         = new AWTColor(255, 255, 238)
+  val lightestBlue  = new AWTColor(204, 242, 255)
+  val lightBlue     = new AWTColor(153, 229, 255)
+  val blue          = new AWTColor(63, 111, 127)
+  val darkBlue      = new AWTColor(0, 126, 168)
+  val darkerBlue    = new AWTColor (0, 96, 128)
+  val darkestBlue   = new AWTColor (0, 85, 102)
 
   def generateLabel(): Label = {
     new Label() {
-      background = bluishSilver
-      border = new javax.swing.border.LineBorder(java.awt.Color.WHITE)
+      background = cream
+      border = new javax.swing.border.LineBorder(java.awt.Color.BLACK)
       minimumSize = new Dimension(100, 100)
       maximumSize = minimumSize
       xAlignment = Alignment.Center
@@ -66,15 +69,6 @@ object Play extends SimpleSwingApplication {
     return true
   }
 
-  def displayWinner {
-    val res = Dialog.showConfirmation(null, 
-				      "Winner! Play Again?", 
-				      optionType=Dialog.Options.YesNo,
-				      title="Winner")
-    if (res == Dialog.Result.No)
-      sys.exit(0)
-  }
-
   def top = new MainFrame {
     title = "2048"
     centerOnScreen()
@@ -88,7 +82,7 @@ object Play extends SimpleSwingApplication {
       contents += row3
       contents += row4
 
-      background = bluishSilver
+      background = cream
 
       focusable = true
       requestFocus
@@ -110,29 +104,29 @@ object Play extends SimpleSwingApplication {
             labels(position).text = null
             position = position - 1
             labels(position).text = icon
-            labels(position).background = blueGreen
-            if (isWin) displayWinner
+            labels(position).background = lightBlue
+//            if (isWin) displayWinner
           }
         case KeyReleased(_, Key.Right, _, _) =>
           if ((position != 3) && (position != 7) && (position != 11) && (position != 15)) {
             labels(position).text = null
             position = position + 1
             labels(position).text = icon
-            labels(position).background = darkGreen
+            labels(position).background = blue
           }
         case KeyReleased(_, Key.Up, _, _) =>
           if ((position != 0) && (position != 1) && (position != 2) && (position != 3)) {
             labels(position).text = null
             position = position - 4
             labels(position).text = icon
-            labels(position).background = blueGreen
+            labels(position).background = darkBlue
           }
         case KeyReleased(_, Key.Down, _, _) =>
           if ((position != 12) && (position != 13) && (position != 14) && (position != 15)) {
             labels(position).text = null
             position = position + 4
             labels(position).text = icon
-            labels(position).background = darkGreen
+            labels(position).background = darkestBlue
           }
       }
     }
