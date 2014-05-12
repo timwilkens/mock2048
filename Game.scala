@@ -54,15 +54,31 @@ object Play extends SimpleSwingApplication {
   labels(position).text = "2"
   labels(position).background = lightestBlue 
 
-  
+  position = randomIterator.nextInt(16)
+  labels(position).text = "2"
+  labels(position).background = lightestBlue 
+
+  position = randomIterator.nextInt(16)
+  labels(position).text = "2"
+  labels(position).background = lightestBlue 
 
   def handleMove(position: Int, i: Int, f: (Int, Int) => Int): Unit  = {
      if (labels(position).background == cream) return
      val prevText = labels(position).text
      val prevColor = labels(position).background
+     var newPosition = f(position, i)
+     if (labels(newPosition).background != cream) return
+        
+     // Probably a much nicer recursive solution.
+     for (x <- 0 to 1) {
+       val temp = f(newPosition, i)
+       if ((temp <= 15) && (temp >= 0) && (labels(temp).background == cream)) {
+         newPosition = temp
+       }
+     }
+
      labels(position).text = null
      labels(position).background = cream
-     val newPosition = f(position, i)
      labels(newPosition).text = prevText
      labels(newPosition).background = prevColor
      score.text = ((score.text.toInt) + 1).toString
@@ -102,13 +118,13 @@ object Play extends SimpleSwingApplication {
           }
         case KeyReleased(_, Key.Up, _, _) =>
           for (s <- (0 to 12 by +4) ++ (1 to 13 by +4) ++ (2 to 14 by +4) ++ (3 to 15 by +4)) {
-            if ((position != 0) && (position != 1) && (position != 2) && (position != 3)) {
+            if ((s != 0) && (s != 1) && (s != 2) && (s != 3)) {
               handleMove(s, 4, (x, y) => x - y)
             }
           }
         case KeyReleased(_, Key.Down, _, _) =>
           for (s <- (12 to 0 by -4) ++ (13 to 1 by -4) ++ (14 to 2 by -4) ++ (15 to 3 by -4)) {
-            if ((position != 12) && (position != 13) && (position != 14) && (position != 15)) {
+            if ((s != 12) && (s != 13) && (s != 14) && (s != 15)) {
               handleMove(s, 4, (x, y) => x + y)
             }
           }
