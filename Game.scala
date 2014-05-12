@@ -9,8 +9,8 @@ object Play extends SimpleSwingApplication {
   val bluishGray = new AWTColor(48, 99, 99)
   val bluishSilver = new AWTColor(210, 255, 255)
 
-  def generateLabel(i: Int): Label = {
-    new Label(i.toString) {
+  def generateLabel(): Label = {
+    new Label() {
       background = bluishSilver
       border = new javax.swing.border.LineBorder(java.awt.Color.WHITE)
       minimumSize = new Dimension(100, 100)
@@ -21,51 +21,40 @@ object Play extends SimpleSwingApplication {
     }
   }
 
-  // Ugly for now....
-  var label1 = generateLabel(1)
-  var label2 = generateLabel(2)
-  var label3 = generateLabel(3)
-  var label4 = generateLabel(4)
-  var label5 = generateLabel(5)
-  var label6 = generateLabel(6)
-  var label7 = generateLabel(7)
-  var label8 = generateLabel(8)
-  var label9 = generateLabel(9)
-  var label10 = generateLabel(10)
-  var label11 = generateLabel(11)
-  var label12 = generateLabel(12)
-  var label13 = generateLabel(13)
-  var label14 = generateLabel(14)
-  var label15 = generateLabel(15)
-  var label16 = generateLabel(16)
+  // Look at those side effects.
+  val labels = 1 to 16 map { i => generateLabel() }
 
   val row1 = new BoxPanel(Orientation.Horizontal) {
-    contents += label1
-    contents += label2
-    contents += label3
-    contents += label4
+    contents += labels(0)
+    contents += labels(1)
+    contents += labels(2)
+    contents += labels(3)
   }
 
   val row2 = new BoxPanel(Orientation.Horizontal) {
-    contents += label5
-    contents += label6
-    contents += label7
-    contents += label8
+    contents += labels(4)
+    contents += labels(5)
+    contents += labels(6)
+    contents += labels(7)
   }
 
   val row3 = new BoxPanel(Orientation.Horizontal) {
-    contents += label9
-    contents += label10
-    contents += label11
-    contents += label12
+    contents += labels(8)
+    contents += labels(9)
+    contents += labels(10)
+    contents += labels(11)
   }
 
   val row4 = new BoxPanel(Orientation.Horizontal) {
-    contents += label13
-    contents += label14
-    contents += label15
-    contents += label16
+    contents += labels(12)
+    contents += labels(13)
+    contents += labels(14)
+    contents += labels(15)
   }
+
+  val icon = "o"
+  var position = 0
+  labels(position).text = icon
 
   def top = new MainFrame {
     title = "2048"
@@ -88,11 +77,29 @@ object Play extends SimpleSwingApplication {
       listenTo(keys)
       reactions += {
         case KeyPressed(_, Key.Left, _, _) =>
-          label1.text = "LEFT";
+          if ((position != 0) && (position != 4) && (position != 8) && (position != 12)) {
+            labels(position).text = null
+            position = position - 1
+            labels(position).text = icon
+          }
         case KeyPressed(_, Key.Right, _, _) =>
+          if ((position != 3) && (position != 7) && (position != 11) && (position != 15)) {
+            labels(position).text = null
+            position = position + 1
+            labels(position).text = icon
+          }
         case KeyPressed(_, Key.Up, _, _) =>
+          if ((position != 0) && (position != 1) && (position != 2) && (position != 3)) {
+            labels(position).text = null
+            position = position - 4
+            labels(position).text = icon
+          }
         case KeyPressed(_, Key.Down, _, _) =>
-          label2.text = (label2.text.toInt + 1).toString
+          if ((position != 12) && (position != 13) && (position != 14) && (position != 15)) {
+            labels(position).text = null
+            position = position + 4
+            labels(position).text = icon
+          }
       }
     }
   }
