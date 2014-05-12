@@ -65,6 +65,7 @@ object Play extends SimpleSwingApplication {
 
 
   def handleMove(position: Int, i: Int, f: (Int, Int) => Int, max: Int): Int  = {
+    if (max == 0) return 0
     if (labels(position).background == cream) return 0
     val prevText = labels(position).text
     val prevColor = labels(position).background
@@ -90,6 +91,54 @@ object Play extends SimpleSwingApplication {
     return 1 
   }
 
+  def maxMovesLeft(s: Int): Int = {
+    if ((s == 0) || (s == 4) || (s == 8) || (s == 12)) {
+      0
+    } else if ((s == 1) || (s == 5) || (s == 9) || (s == 13)) {
+      1
+    } else if ((s == 2) || (s == 6) || (s == 10) || (s == 14)) {
+      2
+    } else {
+      3
+    }
+  }
+
+  def maxMovesRight(s: Int): Int = {
+    if ((s == 3) || (s == 7) || (s == 11) || (s == 15)) {
+      0
+    } else if ((s == 2) || (s == 6) || (s == 10) || (s == 14)) {
+      1
+    } else if ((s == 1) || (s == 5) || (s == 9) || (s == 13)) {
+      2
+    } else {
+      3
+    }
+  }
+
+  def maxMovesUp(s: Int): Int = {
+    if ((s == 0) || (s == 1) || (s == 2) || (s == 3)) {
+      0
+    } else if (s < 8) {
+      1
+    } else if (s < 12) {
+      2
+    } else {
+      3
+    }
+  }
+
+  def maxMovesDown(s: Int): Int = {
+    if ((s == 12) || (s == 13) || (s == 14) || (s == 15)) {
+      0
+    } else if (s > 7) {
+      1
+    } else if (s > 4) {
+      2
+    } else {
+      3
+    }
+  }
+
   def top = new MainFrame {
     title = "2048"
     background = cream
@@ -111,70 +160,38 @@ object Play extends SimpleSwingApplication {
       listenTo(keys)
       // Seriously violating DRY...
       reactions += {
-        case KeyReleased(_, Key.Left, _, _) =>
+        case KeyReleased(_, Key.Left, _, _) => {
           var counter = 0
           for (s <- 0 to 15) {
-            if ((s != 0) && (s != 4) && (s != 8) && (s != 12)) {
-              var maxMoves = 0;
-              if ((s == 1) || (s == 5) || (s == 9) || (s == 13)) {
-                maxMoves = 1
-              } else if ((s == 2) || (s == 6) || (s == 10) || (s == 14)) {
-                maxMoves = 2
-              } else {
-                maxMoves = 3
-              }
-              counter += handleMove(s, 1, (x, y) => x - y, maxMoves)
-            }
+            val maxMoves = maxMovesLeft(s)
+            counter += handleMove(s, 1, (x, y) => x - y, maxMoves)
           }
           if (counter > 0) computerPlay()
-        case KeyReleased(_, Key.Right, _, _) =>
+        }
+        case KeyReleased(_, Key.Right, _, _) => {
           var counter = 0
           for (s <- (0 to 15).reverse) {
-            if ((s != 3) && (s != 7) && (s != 11) && (s != 15)) {
-              var maxMoves = 0;
-              if ((s == 2) || (s == 6) || (s == 10) || (s == 14)) {
-                maxMoves = 1
-              } else if ((s == 1) || (s == 5) || (s == 9) || (s == 13)) {
-                maxMoves = 2
-              } else {
-                maxMoves = 3
-              }
-              counter += handleMove(s, 1, (x, y) => x + y, maxMoves)
-            }
+            val maxMoves = maxMovesRight(s)
+            counter += handleMove(s, 1, (x, y) => x + y, maxMoves)
           }
           if (counter > 0) computerPlay()
-        case KeyReleased(_, Key.Up, _, _) =>
+        }
+        case KeyReleased(_, Key.Up, _, _) => {
           var counter = 0
           for (s <- (0 to 12 by +4) ++ (1 to 13 by +4) ++ (2 to 14 by +4) ++ (3 to 15 by +4)) {
-            if ((s != 0) && (s != 1) && (s != 2) && (s != 3)) {
-              var maxMoves = 0;
-              if (s < 8) {
-                maxMoves = 1
-              } else if (s < 12) {
-                maxMoves = 2
-              } else {
-                maxMoves = 3
-              }
-              counter += handleMove(s, 4, (x, y) => x - y, maxMoves)
-            }
+            val maxMoves = maxMovesUp(s)
+            counter += handleMove(s, 4, (x, y) => x - y, maxMoves)
           }
           if (counter > 0) computerPlay()
-        case KeyReleased(_, Key.Down, _, _) =>
+        }
+        case KeyReleased(_, Key.Down, _, _) => {
           var counter = 0
           for (s <- (12 to 0 by -4) ++ (13 to 1 by -4) ++ (14 to 2 by -4) ++ (15 to 3 by -4)) {
-            if ((s != 12) && (s != 13) && (s != 14) && (s != 15)) {
-              var maxMoves = 0;
-              if (s > 7) {
-                maxMoves = 1
-              } else if (s > 4) {
-                maxMoves = 2
-              } else {
-                maxMoves = 3
-              }
-              counter += handleMove(s, 4, (x, y) => x + y, maxMoves)
-            }
+            val maxMoves = maxMovesDown(s)
+            counter += handleMove(s, 4, (x, y) => x + y, maxMoves)
           }
           if (counter > 0) computerPlay()
+        }
       }
     }
   }
