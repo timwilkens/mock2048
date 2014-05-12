@@ -51,7 +51,7 @@ object Play extends SimpleSwingApplication {
     if (available.size == 1) {
       position = available(0)
     } else {
-      position = randomIterator.nextInt(available.size)
+      position = available(randomIterator.nextInt(available.size))
     }
 
     val r = randomIterator.nextInt(100)
