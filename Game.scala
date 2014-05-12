@@ -14,19 +14,18 @@ object Play extends SimpleSwingApplication {
   val darkerBlue    = new AWTColor (0, 96, 128)
   val darkestBlue   = new AWTColor (0, 85, 102)
 
-  def generateLabel(): Label = {
-    new Label() {
-      background = cream
-      border = new javax.swing.border.LineBorder(java.awt.Color.BLACK)
-      minimumSize = new Dimension(100, 100)
-      maximumSize = minimumSize
-      xAlignment = Alignment.Center
-      yAlignment = Alignment.Center
-      opaque = true
-    }
+  val scoreLabel = new ScoreLabel
+  scoreLabel.text = "Score: "
+
+  val score = new ScoreLabel
+  score.text = "0"
+
+  val header = new BoxPanel(Orientation.Horizontal) {
+    contents += scoreLabel
+    contents += score
   }
 
-  val labels = 1 to 16 map { i => generateLabel() }
+  val labels = 1 to 16 map { i => new GameLabel }
 
   val row1 = new BoxPanel(Orientation.Horizontal) {
     contents += labels(0)
@@ -60,23 +59,15 @@ object Play extends SimpleSwingApplication {
   var position = 0
   labels(position).text = icon
 
-  def isWin(): Boolean = {
-    val color = labels(0).background
-    for(i <- 1 to 15) {
-      if (labels(i).background != color)
-        return true
-    }
-    return true
-  }
-
   def top = new MainFrame {
     title = "2048"
     centerOnScreen()
-    preferredSize = new Dimension(400, 400)
-    maximumSize = new Dimension(400, 400)
-    minimumSize = new Dimension(400, 400)
+    preferredSize = new Dimension(400, 450)
+    maximumSize = new Dimension(400, 450)
+    minimumSize = new Dimension(400, 450)
 
     contents = new BoxPanel(Orientation.Vertical) {
+      contents += header
       contents += row1
       contents += row2
       contents += row3
@@ -87,16 +78,6 @@ object Play extends SimpleSwingApplication {
       focusable = true
       requestFocus
 
-      def displayWinner {
-      val res = Dialog.showConfirmation(contents.head,
-                                        "Winner! Play Again?",
-                                        optionType=Dialog.Options.YesNo,
-                                        title = "Winner",
-                                        icon = null)
-        if (res == Dialog.Result.No)
-          sys.exit(0)
-      }
-
       listenTo(keys)
       reactions += {
         case KeyReleased(_, Key.Left, _, _) =>
@@ -105,7 +86,7 @@ object Play extends SimpleSwingApplication {
             position = position - 1
             labels(position).text = icon
             labels(position).background = lightBlue
-//            if (isWin) displayWinner
+            score.text = ((score.text.toInt) + 1).toString
           }
         case KeyReleased(_, Key.Right, _, _) =>
           if ((position != 3) && (position != 7) && (position != 11) && (position != 15)) {
@@ -132,3 +113,24 @@ object Play extends SimpleSwingApplication {
     }
   }
 }
+
+class GeneralLabel extends Label {
+  background = new AWTColor(255, 255, 238)
+  xAlignment = Alignment.Center
+  yAlignment = Alignment.Center
+  opaque = true
+}
+
+class ScoreLabel extends GeneralLabel {
+  minimumSize = new Dimension(200,50)
+  maximumSize = minimumSize
+  font = new Font("Arial", 0, 24)
+}
+
+class GameLabel extends GeneralLabel {
+  border = new javax.swing.border.LineBorder(java.awt.Color.BLACK)
+  minimumSize = new Dimension(100, 100)
+  maximumSize = minimumSize
+  foreground = new AWTColor(255, 255, 238)
+}
+
