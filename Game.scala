@@ -7,12 +7,17 @@ import java.awt.{Color => AWTColor}
 object Play extends SimpleSwingApplication {
 
   val cream         = new AWTColor(255, 255, 238)
-  val colorMap  = Map( 2  -> new AWTColor(204, 242, 255),
-                       4  -> new AWTColor(153, 229, 255),
-                       8  -> new AWTColor(63, 111, 124),
-                       16 -> new AWTColor(0, 126, 168),
-                       32 -> new AWTColor(0, 96, 128),
-                       64 -> new AWTColor(0, 85, 102) )
+  val colorMap  = Map( 2    -> new AWTColor(144, 238, 144),
+                       4    -> new AWTColor(46, 139, 87),
+                       8    -> new AWTColor(0, 128, 128),
+                       16   -> new AWTColor(0, 206, 209),
+                       32   -> new AWTColor(204, 242, 255),
+                       64   -> new AWTColor(153, 229, 255),
+                       128  -> new AWTColor(63, 111, 124),
+                       256  -> new AWTColor(0, 126, 168),
+                       512  -> new AWTColor(0, 96, 128),
+                       1024 -> new AWTColor(0, 85, 102),
+                       1024 -> new AWTColor(138, 43, 226) )
 
   val scoreLabel = new ScoreLabel
   scoreLabel.text = "Score: "
@@ -83,9 +88,9 @@ object Play extends SimpleSwingApplication {
     val prevColor = labels(position).background
     var newPosition = f(position, i)
 
-    // We have labels to merge.
     var merge = if (labels(newPosition).background == labels(position).background) true else false
 
+    // We have labels to merge.
     if (merge) {
       mergeLabels(position, newPosition)
       return 1
@@ -98,16 +103,27 @@ object Play extends SimpleSwingApplication {
        // Probably a much nicer recursive solution.
       for (x <- 0 to max - 2) {
         val temp = f(newPosition, i)
-        if ((temp <= 15) && (temp >= 0) && (labels(temp).background == cream)) {
-          newPosition = temp
+        if ((temp <= 15) && (temp >= 0)) {
+          if (labels(temp).background == cream) {
+            newPosition = temp
+          } else if (labels(temp).background == labels(position).background) {
+            // Short circuit.
+            mergeLabels(position, temp)
+            return 1
+          }
         }
       }
     }
 
+    // Wipe the old position.
     labels(position).text = null
     labels(position).background = cream
+
+    // Make the move.
     labels(newPosition).text = prevText
     labels(newPosition).background = prevColor
+
+    // How should we score?
     score.text = ((score.text.toInt) + 1).toString
 
     return 1 
