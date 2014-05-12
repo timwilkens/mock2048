@@ -47,18 +47,24 @@ object Play extends SimpleSwingApplication {
   val row4 = generateRow(12)
 
   def computerPlay(): Unit = {
-    val available = (0 to 15).filter(x => labels(x).background == cream)
+    val available = (0 to 15).filter(x => (labels(x).background == cream))
     if (available.size == 0) return
     var position = 0
 
     if (available.size == 1) {
       position = available(0)
     } else {
-      position = randomIterator.nextInt(available.size - 1)
+      position = randomIterator.nextInt(available.size)
     }
 
-    labels(position).text = "2"
-    labels(position).background = lightestBlue
+    val r = randomIterator.nextInt(100)
+    if (r % 2 == 0) {
+      labels(position).text = "2"
+      labels(position).background = lightestBlue
+    } else {
+      labels(position).text = "4"
+      labels(position).background = lightBlue
+    }
   }
 
   // Side Effects!
