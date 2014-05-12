@@ -52,28 +52,30 @@ object Play extends SimpleSwingApplication {
 
   position = randomIterator.nextInt(16)
   labels(position).text = "2"
-  labels(position).background = lightestBlue 
+  labels(position).background = lightBlue 
 
   position = randomIterator.nextInt(16)
   labels(position).text = "2"
-  labels(position).background = lightestBlue 
+  labels(position).background = blue 
 
   position = randomIterator.nextInt(16)
   labels(position).text = "2"
-  labels(position).background = lightestBlue 
+  labels(position).background = darkBlue 
 
-  def handleMove(position: Int, i: Int, f: (Int, Int) => Int): Unit  = {
+  def handleMove(position: Int, i: Int, f: (Int, Int) => Int, max: Int): Unit  = {
      if (labels(position).background == cream) return
      val prevText = labels(position).text
      val prevColor = labels(position).background
      var newPosition = f(position, i)
      if (labels(newPosition).background != cream) return
         
-     // Probably a much nicer recursive solution.
-     for (x <- 0 to 1) {
-       val temp = f(newPosition, i)
-       if ((temp <= 15) && (temp >= 0) && (labels(temp).background == cream)) {
-         newPosition = temp
+     if (max > 1) {
+       // Probably a much nicer recursive solution.
+       for (x <- 0 to max - 2) {
+         val temp = f(newPosition, i)
+         if ((temp <= 15) && (temp >= 0) && (labels(temp).background == cream)) {
+           newPosition = temp
+         }
        }
      }
 
@@ -107,25 +109,33 @@ object Play extends SimpleSwingApplication {
         case KeyReleased(_, Key.Left, _, _) =>
           for (s <- 0 to 15) {
             if ((s != 0) && (s != 4) && (s != 8) && (s != 12)) {
-              handleMove(s, 1, (x, y) => x - y)
+              var maxMoves = 0;
+              if ((s == 1) || (s == 5) || (s == 9) || (s == 13)) {
+                maxMoves = 1
+              } else if ((s == 2) || (s == 6) || (s == 10) || (s == 14)) {
+                maxMoves = 2
+              } else {
+                maxMoves = 3
+              }
+              handleMove(s, 1, (x, y) => x - y, maxMoves)
             }
           }
         case KeyReleased(_, Key.Right, _, _) =>
           for (s <- (0 to 15).reverse) {
             if ((s != 3) && (s != 7) && (s != 11) && (s != 15)) {
-                handleMove(s, 1, (x, y) => x + y)
+                handleMove(s, 1, (x, y) => x + y, 0)
             }
           }
         case KeyReleased(_, Key.Up, _, _) =>
           for (s <- (0 to 12 by +4) ++ (1 to 13 by +4) ++ (2 to 14 by +4) ++ (3 to 15 by +4)) {
             if ((s != 0) && (s != 1) && (s != 2) && (s != 3)) {
-              handleMove(s, 4, (x, y) => x - y)
+              handleMove(s, 4, (x, y) => x - y, 0)
             }
           }
         case KeyReleased(_, Key.Down, _, _) =>
           for (s <- (12 to 0 by -4) ++ (13 to 1 by -4) ++ (14 to 2 by -4) ++ (15 to 3 by -4)) {
             if ((s != 12) && (s != 13) && (s != 14) && (s != 15)) {
-              handleMove(s, 4, (x, y) => x + y)
+              handleMove(s, 4, (x, y) => x + y, 0)
             }
           }
       }
