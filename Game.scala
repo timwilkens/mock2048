@@ -46,17 +46,19 @@ object Play extends SimpleSwingApplication {
   val row3 = generateRow(8)
   val row4 = generateRow(12)
 
-  val icon = "o"
   var position = randomIterator.nextInt(16)
-  labels(position).text = icon
+  labels(position).text = "2"
   labels(position).background = lightestBlue 
 
   def handleMove(i: Int, f: (Int, Int) => Int): Unit  = {
-    labels(position).text = null
+     val prevText = labels(position).text
+     val prevColor = labels(position).background
+     labels(position).text = null
+     labels(position).background = cream
      position = f(position, i)
-     labels(position).text = icon
-     colorIndex = (colorIndex + 1) % 5
-     labels(position).background = colors(colorIndex)
+//     colorIndex = (colorIndex + 1) % 5
+     labels(position).text = prevText
+     labels(position).background = prevColor
      score.text = ((score.text.toInt) + 1).toString
   }
 
@@ -105,13 +107,13 @@ class GeneralLabel extends Label {
   background = new AWTColor(255, 255, 238)
   xAlignment = Alignment.Center
   yAlignment = Alignment.Center
+  font = new Font("Scala", 0, 24)
   opaque = true
 }
 
 class ScoreLabel extends GeneralLabel {
   minimumSize = new Dimension(200,50)
   maximumSize = minimumSize
-  font = new Font("Scala", 0, 24)
 }
 
 class GameLabel extends GeneralLabel {
