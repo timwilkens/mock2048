@@ -6,8 +6,10 @@ import java.awt.{Color => AWTColor}
 
 object Play extends SimpleSwingApplication {
 
-  val bluishGray = new AWTColor(48, 99, 99)
-  val bluishSilver = new AWTColor(210, 255, 255)
+  val bluishGray    = new AWTColor(48, 99, 99)
+  val bluishSilver  = new AWTColor(210, 255, 255)
+  val darkGreen     = new AWTColor(0, 128, 96)
+  val blueGreen     = new AWTColor (0, 96, 128)
 
   def generateLabel(): Label = {
     new Label() {
@@ -21,7 +23,6 @@ object Play extends SimpleSwingApplication {
     }
   }
 
-  // Look at those side effects.
   val labels = 1 to 16 map { i => generateLabel() }
 
   val row1 = new BoxPanel(Orientation.Horizontal) {
@@ -56,9 +57,27 @@ object Play extends SimpleSwingApplication {
   var position = 0
   labels(position).text = icon
 
+  def isWin(): Boolean = {
+    val color = labels(0).background
+    for(i <- 1 to 15) {
+      if (labels(i).background != color)
+        return true
+    }
+    return true
+  }
+
+  def displayWinner {
+    val res = Dialog.showConfirmation(null, 
+				      "Winner! Play Again?", 
+				      optionType=Dialog.Options.YesNo,
+				      title="Winner")
+    if (res == Dialog.Result.No)
+      sys.exit(0)
+  }
+
   def top = new MainFrame {
     title = "2048"
-    centerOnScreen
+    centerOnScreen()
     preferredSize = new Dimension(400, 400)
     maximumSize = new Dimension(400, 400)
     minimumSize = new Dimension(400, 400)
@@ -74,31 +93,46 @@ object Play extends SimpleSwingApplication {
       focusable = true
       requestFocus
 
+      def displayWinner {
+      val res = Dialog.showConfirmation(contents.head,
+                                        "Winner! Play Again?",
+                                        optionType=Dialog.Options.YesNo,
+                                        title = "Winner",
+                                        icon = null)
+        if (res == Dialog.Result.No)
+          sys.exit(0)
+      }
+
       listenTo(keys)
       reactions += {
-        case KeyPressed(_, Key.Left, _, _) =>
+        case KeyReleased(_, Key.Left, _, _) =>
           if ((position != 0) && (position != 4) && (position != 8) && (position != 12)) {
             labels(position).text = null
             position = position - 1
             labels(position).text = icon
+            labels(position).background = blueGreen
+            if (isWin) displayWinner
           }
-        case KeyPressed(_, Key.Right, _, _) =>
+        case KeyReleased(_, Key.Right, _, _) =>
           if ((position != 3) && (position != 7) && (position != 11) && (position != 15)) {
             labels(position).text = null
             position = position + 1
             labels(position).text = icon
+            labels(position).background = darkGreen
           }
-        case KeyPressed(_, Key.Up, _, _) =>
+        case KeyReleased(_, Key.Up, _, _) =>
           if ((position != 0) && (position != 1) && (position != 2) && (position != 3)) {
             labels(position).text = null
             position = position - 4
             labels(position).text = icon
+            labels(position).background = blueGreen
           }
-        case KeyPressed(_, Key.Down, _, _) =>
+        case KeyReleased(_, Key.Down, _, _) =>
           if ((position != 12) && (position != 13) && (position != 14) && (position != 15)) {
             labels(position).text = null
             position = position + 4
             labels(position).text = icon
+            labels(position).background = darkGreen
           }
       }
     }
