@@ -7,15 +7,12 @@ import java.awt.{Color => AWTColor}
 object Play extends SimpleSwingApplication {
 
   val cream         = new AWTColor(255, 255, 238)
-  val lightestBlue  = new AWTColor(204, 242, 255)
-  val lightBlue     = new AWTColor(153, 229, 255)
-  val blue          = new AWTColor(63, 111, 127)
-  val darkBlue      = new AWTColor(0, 126, 168)
-  val darkerBlue    = new AWTColor (0, 96, 128)
-  val darkestBlue   = new AWTColor (0, 85, 102)
-
-  val colors = Array(lightestBlue, lightBlue, blue, darkBlue, darkerBlue, darkestBlue)
-  var colorIndex = 1
+  val colorMap  = Map( 2  -> new AWTColor(204, 242, 255),
+                       4  -> new AWTColor(153, 229, 255),
+                       8  -> new AWTColor(63, 111, 124),
+                       16 -> new AWTColor(0, 126, 168),
+                       32 -> new AWTColor(0, 96, 128),
+                       64 -> new AWTColor(0, 85, 102) )
 
   val scoreLabel = new ScoreLabel
   scoreLabel.text = "Score: "
@@ -58,13 +55,9 @@ object Play extends SimpleSwingApplication {
     }
 
     val r = randomIterator.nextInt(100)
-    if (r % 2 == 0) {
-      labels(position).text = "2"
-      labels(position).background = lightestBlue
-    } else {
-      labels(position).text = "4"
-      labels(position).background = lightBlue
-    }
+    val newValue = if (r % 2 == 0) "2" else "4"
+    labels(position).text = newValue
+    labels(position).background = colorMap(labels(position).text.toInt)
   }
 
   // Side Effects!
