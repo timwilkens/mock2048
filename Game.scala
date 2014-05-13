@@ -11,7 +11,7 @@ object Play extends SimpleSwingApplication {
                        4    -> new AWTColor(46, 139, 87),
                        8    -> new AWTColor(0, 128, 128),
                        16   -> new AWTColor(0, 206, 209),
-                       32   -> new AWTColor(204, 242, 255),
+                       32   -> new AWTColor(95, 158, 160),
                        64   -> new AWTColor(153, 229, 255),
                        128  -> new AWTColor(63, 111, 124),
                        256  -> new AWTColor(0, 126, 168),
@@ -141,6 +141,9 @@ object Play extends SimpleSwingApplication {
     // Upgrade.
     labels(mergeInto).text = newValue.toString
     labels(mergeInto).background = colorMap(newValue)
+
+    // Points!
+    score.text = ((score.text.toInt) + newValue).toString
   }
 
 
@@ -184,9 +187,6 @@ object Play extends SimpleSwingApplication {
     // Make the move.
     labels(newPosition).text = prevText
     labels(newPosition).background = prevColor
-
-    // How should we score?
-    score.text = ((score.text.toInt) + 1).toString
 
     return 1 
   }
@@ -311,7 +311,7 @@ class ScoreLabel extends GeneralLabel {
 }
 
 class GameLabel extends GeneralLabel {
-  border = new javax.swing.border.LineBorder(java.awt.Color.BLACK)
+//  border = new javax.swing.border.LineBorder(java.awt.Color.BLACK)
   minimumSize = new Dimension(200, 200)
   maximumSize = minimumSize
   foreground = new AWTColor(255, 255, 238)
