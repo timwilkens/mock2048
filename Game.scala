@@ -259,8 +259,8 @@ object Play extends SimpleSwingApplication {
             counter += handleMove(s, x => x - 1, maxMoves)
           }
           if (counter > 0) computerPlay()
-          if (isLoser) gameOver("You Lose")
-          if (isWinner) gameOver("Winner")
+          if (isLoser) gameOver("You Lose.")
+          if (isWinner) gameOver("Winner.")
         }
         case KeyReleased(_, Key.Right, _, _) => {
           var counter = 0
@@ -269,8 +269,8 @@ object Play extends SimpleSwingApplication {
             counter += handleMove(s, x => x + 1, maxMoves)
           }
           if (counter > 0) computerPlay()
-          if (isLoser) gameOver("You Lose")
-          if (isWinner) gameOver("Winner")
+          if (isLoser) gameOver("You Lose.")
+          if (isWinner) gameOver("Winner.")
         }
         case KeyReleased(_, Key.Up, _, _) => {
           var counter = 0
@@ -279,8 +279,8 @@ object Play extends SimpleSwingApplication {
             counter += handleMove(s, x => x - 4, maxMoves)
           }
           if (counter > 0) computerPlay()
-          if (isLoser) gameOver("You Lose")
-          if (isWinner) gameOver("Winner")
+          if (isLoser) gameOver("You Lose.")
+          if (isWinner) gameOver("Winner.")
         }
         case KeyReleased(_, Key.Down, _, _) => {
           var counter = 0
@@ -289,8 +289,8 @@ object Play extends SimpleSwingApplication {
             counter += handleMove(s, x => x + 4, maxMoves)
           }
           if (counter > 0) computerPlay()
-          if (isLoser) gameOver("You Lose")
-          if (isWinner) gameOver("Winner")
+          if (isLoser) gameOver("You Lose.")
+          if (isWinner) gameOver("Winner.")
         }
       }
     }
@@ -311,9 +311,10 @@ class ScoreLabel extends GeneralLabel {
 }
 
 class GameLabel extends GeneralLabel {
-//  border = new javax.swing.border.LineBorder(java.awt.Color.BLACK)
-  minimumSize = new Dimension(200, 200)
+  val cream = new AWTColor(255, 255, 238)
+  border = new javax.swing.border.LineBorder(cream, 20)
+  minimumSize = new Dimension(180, 180)
   maximumSize = minimumSize
-  foreground = new AWTColor(255, 255, 238)
+  foreground = cream // Text color
 }
 
