@@ -313,7 +313,7 @@ class ScoreLabel extends GeneralLabel {
 class GameLabel extends GeneralLabel {
   val cream = new AWTColor(255, 255, 238)
   border = new javax.swing.border.LineBorder(cream, 20)
-  minimumSize = new Dimension(180, 180)
+  minimumSize = new Dimension(200, 200)
   maximumSize = minimumSize
   foreground = cream // Text color
 }
