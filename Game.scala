@@ -82,7 +82,6 @@ object Play extends SimpleSwingApplication {
 
 
   def handleMove(position: Int, i: Int, f: (Int, Int) => Int, max: Int): Int  = {
-    if (max == 0) return 0
     if (labels(position).background == cream) return 0
     val prevText = labels(position).text
     val prevColor = labels(position).background
@@ -130,9 +129,7 @@ object Play extends SimpleSwingApplication {
   }
 
   def maxMovesLeft(s: Int): Int = {
-    if (Array(0, 4, 8, 12) contains s) {
-      0
-    } else if (Array(1, 5, 9, 13) contains s) {
+    if (Array(1, 5, 9, 13) contains s) {
       1
     } else if (Array(2, 6, 10, 14) contains s) {
       2
@@ -142,9 +139,7 @@ object Play extends SimpleSwingApplication {
   }
 
   def maxMovesRight(s: Int): Int = {
-    if (Array(3, 7, 11, 15) contains s) {
-      0
-    } else if (Array(2, 6, 10, 14) contains s) {
+    if (Array(2, 6, 10, 14) contains s) {
       1
     } else if (Array(1, 5, 9, 10) contains s) {
       2
@@ -154,9 +149,7 @@ object Play extends SimpleSwingApplication {
   }
 
   def maxMovesUp(s: Int): Int = {
-    if (s < 4) {
-      0
-    } else if (s < 8) {
+    if (s < 8) {
       1
     } else if (s < 12) {
       2
@@ -166,9 +159,7 @@ object Play extends SimpleSwingApplication {
   }
 
   def maxMovesDown(s: Int): Int = {
-    if (s > 11) {
-      0
-    } else if (s > 7) {
+    if (s > 7) {
       1
     } else if (s > 4) {
       2
@@ -200,7 +191,7 @@ object Play extends SimpleSwingApplication {
       reactions += {
         case KeyReleased(_, Key.Left, _, _) => {
           var counter = 0
-          for (s <- 0 to 15) {
+          for (s <- Array(1, 2, 3, 5, 6, 7, 9, 10, 11, 13, 14, 15)) {
             val maxMoves = maxMovesLeft(s)
             counter += handleMove(s, 1, (x, y) => x - y, maxMoves)
           }
@@ -208,7 +199,7 @@ object Play extends SimpleSwingApplication {
         }
         case KeyReleased(_, Key.Right, _, _) => {
           var counter = 0
-          for (s <- (0 to 15).reverse) {
+          for (s <- Array(14, 13, 12, 10, 9, 8, 6, 5, 4, 2, 1, 0)) {
             val maxMoves = maxMovesRight(s)
             counter += handleMove(s, 1, (x, y) => x + y, maxMoves)
           }
